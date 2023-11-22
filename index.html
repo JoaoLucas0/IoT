@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TrabDeIoT</title>
+	<style type="text/css">
+		body{
+			background-color: #efeaea;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.data-container{
+			display: flex;
+			justify-content: space-between;
+			width: 50%;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: #cbc805;
+			box-shadow: 0 2px 20px rgba(0, 0, 0, 226);
+			border-radius: 10px;
+		}
+
+		.data-item{
+			text-align: center;
+		}
+
+		.data-item h2{
+			font-size: 24px;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.data-item p{
+			font-size: 48px;
+			font-weight: bold;
+			color: #fbfbfb;
+		}
+
+		.data-head{
+			margin: auto;
+			width: 50%;
+			text-align: center;
+			font-size: 45px;
+			font-weight: bold;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: rgb(253, 252, 252);
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+			border-radius: 20px;
+
+
+		}
+
+        #title_container {
+      width: 100%;
+      height: 5%;
+
+      text-align: center;
+      float: left;
+      margin: 0;
+
+      color: #003049;
+      text-transform: uppercase;
+      font-family: Verdana;
+      font-size: 12px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 5px;
+      margin-bottom: 5px;
+
+      color: #003049;
+    }
+
+
+    #form_container {
+      width: 100%;
+      height: 50%;
+
+      float: left;
+      margin-top: 2px;
+      padding-left: 100px;
+      padding-right: 100px;
+
+      box-sizing: border-box;
+    }
+
+    #form_container * {
+      width: 100%;
+      height: 40px;
+
+      border: none;
+      outline: none;
+      border-left: 2px solid #003049;
+      background-color: #EBF8FF;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+
+      margin-top: 1px;
+      float: left;
+
+    }
+
+    #button_container {
+      width: 100%;
+      height: 5%;
+
+      text-align: center;
+      float: left;
+      margin-bottom: 50px;
+
+      font-family: Verdana;
+
+    }
+
+    #submit {
+      width: 25%;
+      height: 35px;
+
+      background-color: #D62828;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #fff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+	</style>
+</head>
+<body>
+
+	<div class="data-head">Automação residencial </div>
+
+	<div class="data-container">
+		<div class="data-item">
+			<h2>corrente</h2>
+			<p class="value" id="Irms"> 0 &#8451;</p>
+		</div>
+		
+        <div class="data-item">
+			<h2> potencia </h2>
+			<p class="value" id="potencia"> 0 </p>
+		</div>
+        
+        <div class="data-item">
+			<h2> pir </h2>
+			<p class="value" id="pir"> 0 </p>
+		</div>
+        
+        <div class="data-item">
+			<h2>LED </h2>
+			<p class="value" id="LED"> 0 </p>
+		</div>
+
+		
+	</div>
+<div id="container">
+
+    <div id="title_container">
+        <span id="content">
+            <h2 class="typedtext"></h2>
+        </span>
+            <h2 id="sub_header"> Digite o valor da conta </h2>
+        </div>
+  
+        <div id="form_container">
+          <input placeholder="input" type="input" id="input"/>
+        </div>
+  
+        <div id="button_container">
+            <button id="submit" onclick="save()"> SUBMIT </button>
+          </div>
+  
+</div>
+	
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <script src="index.js"></script>
+	
+    <script type="module">
+	  // Import the functions you need from the SDKs you need
+	  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+	  // TODO: Add SDKs for Firebase products that you want to use
+	  // https://firebase.google.com/docs/web/setup#available-libraries
+
+	  // Your web app's Firebase configuration here (Do not use the existing configuration)
+	  
+        const firebaseConfig = 
+		{
+		  apiKey: "AIzaSyAZpkHJWzImibYA5CoYVgZkFzzOgCIJvJQ",
+		  authDomain: "trabalhodeiot.firebaseapp.com",
+		  databaseURL: "https://trabalhodeiot-default-rtdb.firebaseio.com",
+		  projectId: "trabalhodeiot",
+		  storageBucket: "trabalhodeiot.appspot.com",
+		  messagingSenderId: "147003522334",
+		  appId: "1:147003522334:web:9140ec7938bafc584add0f",
+          measurementId: "G-3ZGGYPV4LW"
+		  };
+		
+    if(!firebase.apps.length){
+   firebase.initializeApp(firebaseConfig)
+}
+
+	  // getting reference to the database
+	  var database = firebase.database();
+
+	  //getting reference to the data we want
+	  var dataRef1 = database.ref('sc13/Irms');
+      var dataRef2 = database.ref('sc13/potencia');
+	  var dataRef3 = database.ref('sensor/pir');
+      var dataRef4 = database.ref('sensor/LED');
+     
+	  //fetch the data
+	  dataRef1.on('value', function(getdata1)
+      {
+	  	var Irms = getdata1.val();
+	  	document.getElementById('Irms').innerHTML = Irms;
+	  })
+
+	   dataRef2.on('value', function(getdata2)
+       {
+	  	var potencia = getdata2.val();
+	  	document.getElementById('potencia').innerHTML = potencia;
+	  })
+      
+      dataRef3.on('value', function(getdata3)
+       {
+	  	var pir = getdata3.val();
+	  	document.getElementById('pir').innerHTML = pir;
+	  })
+
+      dataRef4.on('value', function(getdata4)
+       {
+	  	var LED = getdata4.val();
+	  	document.getElementById('LED').innerHTML = LED;
+	  })
+
+
+	</script>
+
+</body>
+</html>
